@@ -1,0 +1,54 @@
+<resources>
+    <!-- Field names -->
+    <string name="app_name">Pet Care</string>
+    <string name="form_name">Pet Registration Form</string>
+    <string name="microchip">Microchip ID</string>
+    <string name="name">Name</string>
+    <string name="gender">Gender</string>
+    <string name="email">Email Address</string>
+    <string name="access_code">Access Code</string>
+    <string name="confirm_code">Confirm Code</string>
+    <string name="breed">Breed</string>
+    <string name="neutered">Neutered</string>
+
+    <!-- Buttons -->
+    <string name="reset_button">Reset</string>
+    <string name="submit_button">Submit</string>
+
+    <!-- Field default values -->
+    <string name="micro_default">ID</string>
+    <string name="email_default">none@none.com</string>
+
+    <!-- Microchip ID's -->
+    <string-array name="chips">
+        <item>DA92384</item>
+        <item>5213A4EGAL</item>
+        <item>78EX8937</item>
+        <item>AAMOCS3</item>
+    </string-array>
+
+    <!-- Radio Group -->
+    <string name="gender_male">Male</string>
+    <string name="gender_female">Female</string>
+
+    <!-- Email domains -->
+    <string-array name="domain_list">
+        <item>edu</item>
+        <item>co</item>
+        <item>com</item>
+        <item>gal</item>
+    </string-array>
+
+    <!-- Breed List -->
+    <string-array name="breed_list">
+        <item>Husky</item>
+        <item>Chihuahua</item>
+        <item>Shih Tzu</item>
+        <item>Bulldog</item>
+        <item>German Shepherd</item>
+    </string-array>
+
+    <!-- Neuter checkbox -->
+    <string name="neuter_check">Is Neutered?</string>
+
+</resources>
