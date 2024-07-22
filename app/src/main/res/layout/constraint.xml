@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingStart="26dp"
+    android:paddingEnd="26dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="26dp"
         tools:context="com.zybooks.petcare.MainActivity">
 
         <TextView
@@ -35,7 +36,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/app_name"
-            app:layout_constraintVertical_bias="0.105" />
+            app:layout_constraintVertical_bias="0.05" />
 
         <Space
             android:layout_width="wrap_content"
