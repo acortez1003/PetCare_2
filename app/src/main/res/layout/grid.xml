@@ -24,7 +24,8 @@
             android:text="@string/app_name"
             android:textSize="16sp"
             android:layout_columnSpan="3"
-            android:gravity="center"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="30dp"
             android:layout_marginBottom="20dp"/>
 
         <!-- Form Name -->
@@ -36,7 +37,6 @@
             android:textSize="26sp"
             android:layout_columnSpan="3"
             android:gravity="center"
-            android:layout_marginTop="20dp"
             android:layout_row="1"/>
 
         <!-- Space -->
