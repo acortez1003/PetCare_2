@@ -38,9 +38,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.grid);
+        setContentView(R.layout.activity_main);
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.grid_layout), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main_layout), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
@@ -100,79 +100,122 @@ public class MainActivity extends AppCompatActivity {
 
     // submit form and error checking
     private void submitForm() {
-        List<String> errorMessages = new ArrayList<>();
+        boolean isValid = true;
 
+        // clear previous errors
+        clearErrors();
+
+        // validate each field and update the validity status
+        isValid &= validateMicrochipID();
+        isValid &= validateName();
+        isValid &= validateEmail();
+        isValid &= validateAccessCode();
+        isValid &= validateConfirmCode();
+
+        // check validity
+        if (isValid) {
+            resetForm();
+            Toast.makeText(this, "SUCCESS: Form sent to database", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Errors detected", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void clearErrors() {
         microEditText.setTextColor(Color.BLACK);
+        microEditText.setError(null);
         nameEditText.setTextColor(Color.BLACK);
+        nameEditText.setError(null);
         emailEditText.setTextColor(Color.BLACK);
+        emailEditText.setError(null);
         accessEditText.setTextColor(Color.BLACK);
+        accessEditText.setError(null);
         confirmEditText.setTextColor(Color.BLACK);
+        confirmEditText.setError(null);
+    }
 
+    private boolean validateMicrochipID() {
         String microchipID = microEditText.getText().toString();
+
+        if (microchipID.isEmpty()) {
+            microEditText.setTextColor(Color.RED);
+            microEditText.setError("Microchip ID cannot be empty");
+            return false;
+        } else if (microchipID.length() < 5 || microchipID.length() > 15) {
+            microEditText.setTextColor(Color.RED);
+            microEditText.setError("Microchip ID must be between 5 and 15 characters");
+            return false;
+        } else if (!microchipID.matches("[A-Z0-9]+")) {
+            microEditText.setTextColor(Color.RED);
+            microEditText.setError("Microchip ID must be alphanumeric and uppercase");
+            return false;
+        } else if (!Arrays.asList(chipsArray).contains(microchipID)) {
+            microEditText.setTextColor(Color.RED);
+            microEditText.setError("Microchip ID is not valid");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateName() {
         String name = nameEditText.getText().toString();
+
+        if (name.isEmpty()) {
+            nameEditText.setTextColor(Color.RED);
+            nameEditText.setError("Name cannot be empty");
+            return false;
+        } else if (!isNameValid(name)) {
+            nameEditText.setTextColor(Color.RED);
+            nameEditText.setError("Name must start with a capital letter");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateEmail() {
         String email = emailEditText.getText().toString();
+
+        if (email.isEmpty()) {
+            emailEditText.setTextColor(Color.RED);
+            emailEditText.setError("Email cannot be empty");
+            return false;
+        } else if (!isEmailValid(email)) {
+            emailEditText.setTextColor(Color.RED);
+            emailEditText.setError("Invalid email address");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateAccessCode() {
+        String access = accessEditText.getText().toString();
+
+        if (access.isEmpty()) {
+            accessEditText.setTextColor(Color.RED);
+            accessEditText.setError("Access code cannot be empty");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateConfirmCode() {
         String access = accessEditText.getText().toString();
         String confirm = confirmEditText.getText().toString();
 
-        // Microchip ID Validation
-        if (microchipID.isEmpty()) {
-            microEditText.setTextColor(Color.RED);
-            errorMessages.add("Microchip ID cannot be empty");
-        } else {
-            if (microchipID.length() < 5 || microchipID.length() > 15) {
-                microEditText.setTextColor(Color.RED);
-                errorMessages.add("Microchip ID must be between 5 and 15 characters");
-            } else if (!microchipID.matches("[A-Z0-9]+")) {
-                microEditText.setTextColor(Color.RED);
-                errorMessages.add("Microchip ID must be alphanumeric and uppercase");
-            } else if (!Arrays.asList(chipsArray).contains(microchipID)) {
-                microEditText.setTextColor(Color.RED);
-                errorMessages.add("Microchip ID is not valid");
-            }
-        }
-
-        // Name
-        if (name.isEmpty()) {
-            nameEditText.setTextColor(Color.RED);
-            errorMessages.add("Name cannot be empty");
-        } else if (!isNameValid(name)) {
-            nameEditText.setTextColor(Color.RED);
-            errorMessages.add("Name must start with a capital letter");
-        }
-
-        // Email address
-        if (email.isEmpty()) {
-            emailEditText.setTextColor(Color.RED);
-            errorMessages.add("Email cannot be empty");
-        } else if (!isEmailValid(email)) {
-            emailEditText.setTextColor(Color.RED);
-            errorMessages.add("Invalid email address");
-        }
-
-        // Access code and Confirm code
-        if (access.isEmpty()) {
-            accessEditText.setTextColor(Color.RED);
-            errorMessages.add("Access code cannot be empty");
-        }
         if (confirm.isEmpty()) {
             confirmEditText.setTextColor(Color.RED);
-            errorMessages.add("Confirm code cannot be empty");
-        }
-        if (!access.equals(confirm)) {
+            confirmEditText.setError("Confirm code cannot be empty");
+            return false;
+        } else if (!access.equals(confirm)) {
             accessEditText.setTextColor(Color.RED);
             confirmEditText.setTextColor(Color.RED);
-            errorMessages.add("Access codes do not match");
+            accessEditText.setError("Access codes do not match");
+            confirmEditText.setError("Access codes do not match");
+            return false;
         }
-
-        // Display errors
-        if(!errorMessages.isEmpty()) {
-            showErrorMessages(errorMessages);
-        } else {
-            // No errors
-            resetForm();
-            Toast.makeText(this, "SUCCESS: Form sent to database", Toast.LENGTH_SHORT).show();
-        }
+        return true;
     }
+
 
     // every first letter in Name has to be capital
     private boolean isNameValid(String name) {
@@ -204,15 +247,6 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
         return true;
-    }
-
-    // displays error messages with a delay
-    private void showErrorMessages(List<String> errorMessages) {
-        Handler handler = new Handler();
-        for(int i = 0; i < errorMessages.size(); i++) {
-            String message = errorMessages.get(i);
-            handler.postDelayed(() -> Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show(),i * 1000L);
-        }
     }
 
     private void setupTextWatcher(EditText editText) {
