@@ -5,9 +5,10 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity
+@Entity(tableName = "users")
 public class User {
     @PrimaryKey(autoGenerate = false)
+    @NonNull
     @ColumnInfo(name = "micro_id")
     private String mMicroId;
 
@@ -17,7 +18,7 @@ public class User {
 
     @NonNull
     @ColumnInfo(name = "gender")
-    private int mGender;
+    private String mGender;
 
     @NonNull
     @ColumnInfo(name = "email")
@@ -34,7 +35,7 @@ public class User {
     @ColumnInfo(name = "neutered")
     private boolean mNeutered;
 
-    public User(@NonNull String microId, @NonNull String name, int gender, @NonNull String email,
+    public User(@NonNull String microId, @NonNull String name, @NonNull String gender, @NonNull String email,
                 @NonNull String access, @NonNull String breed, boolean neutered) {
         this.mMicroId = microId;
         this.mName = name;
@@ -60,10 +61,10 @@ public class User {
         this.mName = name;
     }
 
-    public int getGender() {
+    public String getGender() {
         return mGender;
     }
-    public void setGender(int gender) {
+    public void setGender(@NonNull String gender) {
         this.mGender = gender;
     }
 

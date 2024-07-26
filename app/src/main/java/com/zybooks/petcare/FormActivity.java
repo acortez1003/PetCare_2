@@ -19,6 +19,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.zybooks.petcare.model.User;
+import com.zybooks.petcare.repo.UserRepository;
 
 import java.util.Arrays;
 import java.util.regex.Matcher;
@@ -26,6 +27,7 @@ import java.util.regex.Pattern;
 
 public class FormActivity extends AppCompatActivity {
 
+    private UserRepository userRepository;
     private EditText microEditText, nameEditText, emailEditText, accessEditText, confirmEditText;
     private RadioGroup genderRadioGroup;
     private Spinner breedSpinner;
@@ -45,7 +47,8 @@ public class FormActivity extends AppCompatActivity {
             return insets;
         });
 
-        //User newUser = new User(microId, name, gender, email)
+        // Initialize the database and DAO
+        userRepository = UserRepository.getInstance(this);
 
         // assigning all input fields
         microEditText = findViewById(R.id.micro_edit_text);         // EditText
@@ -66,9 +69,6 @@ public class FormActivity extends AppCompatActivity {
                 this, R.array.breed_list, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         breedSpinner.setAdapter(adapter);
-
-        // microchipID array
-        chipsArray = getResources().getStringArray(R.array.chips);
 
         // domain types array
         domainArray = getResources().getStringArray(R.array.domain_list);
@@ -101,21 +101,35 @@ public class FormActivity extends AppCompatActivity {
     // submit form and error checking
     private void submitForm() {
         boolean isValid = true;
+        String microchipID = microEditText.getText().toString();
+        String name = nameEditText.getText().toString();
+        String gender = genderRadioGroup.getCheckedRadioButtonId() == R.id.male_radio_group ? "Male" : "Female";
+        String email = emailEditText.getText().toString();
+        String access = accessEditText.getText().toString();
+        String confirm = confirmEditText.getText().toString();
+        String breed = breedSpinner.getSelectedItem().toString();
+        boolean neutered = neuterCheckbox.isChecked();
 
         // clear previous errors
         clearErrors();
 
         // validate each field and update the validity status
-        isValid &= validateMicrochipID();
-        isValid &= validateName();
-        isValid &= validateEmail();
-        isValid &= validateAccessCode();
-        isValid &= validateConfirmCode();
+        isValid &= validateMicrochipID(microchipID);
+        isValid &= validateName(name);
+        isValid &= validateEmail(email);
+        isValid &= validateCodes(access, confirm);
 
         // check validity
         if (isValid) {
-            resetForm();
-            Toast.makeText(this, "SUCCESS: Form sent to database", Toast.LENGTH_SHORT).show();
+            User newUser = new User(microchipID, name, gender, email, access, breed, neutered);
+            boolean isAdded = userRepository.addUser(newUser);
+            if(isAdded) {
+                resetForm();
+                Toast.makeText(this, "SUCCESS: Form sent to database", Toast.LENGTH_SHORT).show();
+            } else {
+                microEditText.setError("Already exists");
+                Toast.makeText(this, "Microchip ID already exists", Toast.LENGTH_SHORT).show();
+            }
         } else {
             Toast.makeText(this, "Errors detected", Toast.LENGTH_SHORT).show();
         }
@@ -134,8 +148,8 @@ public class FormActivity extends AppCompatActivity {
         confirmEditText.setError(null);
     }
 
-    private boolean validateMicrochipID() {
-        String microchipID = microEditText.getText().toString();
+    private boolean validateMicrochipID(String microchipID) {
+        String microchipId = microEditText.getText().toString();
 
         if (microchipID.isEmpty()) {
             microEditText.setTextColor(Color.RED);
@@ -149,17 +163,11 @@ public class FormActivity extends AppCompatActivity {
             microEditText.setTextColor(Color.RED);
             microEditText.setError("Microchip ID must be alphanumeric and uppercase");
             return false;
-        } else if (!Arrays.asList(chipsArray).contains(microchipID)) {
-            microEditText.setTextColor(Color.RED);
-            microEditText.setError("Microchip ID is not valid");
-            return false;
         }
         return true;
     }
 
-    private boolean validateName() {
-        String name = nameEditText.getText().toString();
-
+    private boolean validateName(String name) {
         if (name.isEmpty()) {
             nameEditText.setTextColor(Color.RED);
             nameEditText.setError("Name cannot be empty");
@@ -172,9 +180,7 @@ public class FormActivity extends AppCompatActivity {
         return true;
     }
 
-    private boolean validateEmail() {
-        String email = emailEditText.getText().toString();
-
+    private boolean validateEmail(String email) {
         if (email.isEmpty()) {
             emailEditText.setTextColor(Color.RED);
             emailEditText.setError("Email cannot be empty");
@@ -187,21 +193,12 @@ public class FormActivity extends AppCompatActivity {
         return true;
     }
 
-    private boolean validateAccessCode() {
-        String access = accessEditText.getText().toString();
-
+    private boolean validateCodes(String access, String confirm) {
         if (access.isEmpty()) {
             accessEditText.setTextColor(Color.RED);
             accessEditText.setError("Access code cannot be empty");
             return false;
         }
-        return true;
-    }
-
-    private boolean validateConfirmCode() {
-        String access = accessEditText.getText().toString();
-        String confirm = confirmEditText.getText().toString();
-
         if (confirm.isEmpty()) {
             confirmEditText.setTextColor(Color.RED);
             confirmEditText.setError("Confirm code cannot be empty");

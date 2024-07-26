@@ -19,14 +19,6 @@
     <string name="micro_default">ID</string>
     <string name="email_default">none@none.com</string>
 
-    <!-- Microchip ID's -->
-    <string-array name="chips">
-        <item>DA92384</item>
-        <item>5213A4EGAL</item>
-        <item>78EX8937</item>
-        <item>AAMOCS3</item>
-    </string-array>
-
     <!-- Radio Group -->
     <string name="gender_male">Male</string>
     <string name="gender_female">Female</string>
