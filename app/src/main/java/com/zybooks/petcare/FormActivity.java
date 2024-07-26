@@ -18,6 +18,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.zybooks.petcare.model.User;
+
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -43,8 +45,9 @@ public class FormActivity extends AppCompatActivity {
             return insets;
         });
 
-        // assigning all input fields
+        //User newUser = new User(microId, name, gender, email)
 
+        // assigning all input fields
         microEditText = findViewById(R.id.micro_edit_text);         // EditText
         nameEditText = findViewById(R.id.name_edit_text);
         emailEditText = findViewById(R.id.email_edit_text);
