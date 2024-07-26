@@ -32,7 +32,6 @@ public class FormActivity extends AppCompatActivity {
     private RadioGroup genderRadioGroup;
     private Spinner breedSpinner;
     private CheckBox neuterCheckbox;
-    private String[] chipsArray;
     private String[] domainArray;
 
     @Override
@@ -127,6 +126,7 @@ public class FormActivity extends AppCompatActivity {
                 resetForm();
                 Toast.makeText(this, "SUCCESS: Form sent to database", Toast.LENGTH_SHORT).show();
             } else {
+                microEditText.setTextColor(Color.RED);
                 microEditText.setError("Already exists");
                 Toast.makeText(this, "Microchip ID already exists", Toast.LENGTH_SHORT).show();
             }
@@ -149,8 +149,6 @@ public class FormActivity extends AppCompatActivity {
     }
 
     private boolean validateMicrochipID(String microchipID) {
-        String microchipId = microEditText.getText().toString();
-
         if (microchipID.isEmpty()) {
             microEditText.setTextColor(Color.RED);
             microEditText.setError("Microchip ID cannot be empty");
@@ -194,23 +192,24 @@ public class FormActivity extends AppCompatActivity {
     }
 
     private boolean validateCodes(String access, String confirm) {
+        boolean isValid = true;
         if (access.isEmpty()) {
             accessEditText.setTextColor(Color.RED);
             accessEditText.setError("Access code cannot be empty");
-            return false;
+            isValid = false;
         }
         if (confirm.isEmpty()) {
             confirmEditText.setTextColor(Color.RED);
             confirmEditText.setError("Confirm code cannot be empty");
-            return false;
+            isValid = false;
         } else if (!access.equals(confirm)) {
             accessEditText.setTextColor(Color.RED);
             confirmEditText.setTextColor(Color.RED);
             accessEditText.setError("Access codes do not match");
             confirmEditText.setError("Access codes do not match");
-            return false;
+            isValid = false;
         }
-        return true;
+        return isValid;
     }
 
 
